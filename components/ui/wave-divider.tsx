@@ -10,8 +10,9 @@ interface WaveDividerProps {
 
 /**
  * 波浪分隔组件 - 多层动态波浪效果
- * 作为图片区域和内容区域的装饰性分割
- * 使用主题色不同透明度创建层次感
+ *
+ * 三层波浪使用相同的周期（波峰间距600），确保视觉协调
+ * 通过振幅、透明度和动画速度区分层次
  */
 export function WaveDivider({
   height = 48,
@@ -27,44 +28,47 @@ export function WaveDivider({
       )}
       style={{ height: `${height}px`, marginTop: '-1px' }}
     >
-      {/* 第一层波浪 - 最底层，慢速 */}
+      {/* 第一层波浪 - 慢速，小振幅 */}
+      {/* 周期600，振幅8（波谷y=16，波峰y=32，基线y=24） */}
       <svg
         className="absolute bottom-0 w-[200%] animate-wave-slow"
         viewBox="0 0 2400 48"
         preserveAspectRatio="none"
       >
         <path
-          d="M0,24 Q300,8 600,24 Q900,40 1200,24 Q1500,8 1800,24 Q2100,40 2400,24 L2400,48 L0,48 Z"
+          d="M0,24 Q150,16 300,24 Q450,32 600,24 Q750,16 900,24 Q1050,32 1200,24 Q1350,16 1500,24 Q1650,32 1800,24 Q1950,16 2100,24 Q2250,32 2400,24 L2400,48 L0,48 Z"
           fill="var(--primary)"
-          fillOpacity="0.15"
+          fillOpacity={0.15}
         />
       </svg>
 
-      {/* 第二层波浪 - 中速 */}
+      {/* 第二层波浪 - 中速，中等振幅 */}
+      {/* 周期600，振幅12（波谷y=20，波峰y=44，基线y=32） */}
       <svg
         className="absolute bottom-0 w-[200%] animate-wave"
-        style={{ animationDelay: '-3s' }}
+        style={{ animationDelay: '-2s' }}
         viewBox="0 0 2400 48"
         preserveAspectRatio="none"
       >
         <path
-          d="M0,32 Q200,16 400,32 Q600,48 800,32 Q1000,16 1200,32 Q1400,48 1600,32 Q1800,16 2000,32 Q2200,48 2400,32 L2400,48 L0,48 Z"
+          d="M0,32 Q150,20 300,32 Q450,44 600,32 Q750,20 900,32 Q1050,44 1200,32 Q1350,20 1500,32 Q1650,44 1800,32 Q1950,20 2100,32 Q2250,44 2400,32 L2400,48 L0,48 Z"
           fill="var(--primary)"
-          fillOpacity="0.25"
+          fillOpacity={0.25}
         />
       </svg>
 
-      {/* 第三层波浪 - 快速 */}
+      {/* 第三层波浪 - 快速，大振幅 */}
+      {/* 周期600，振幅16（波谷y=28，波峰y=56，基线y=42） */}
       <svg
         className="absolute bottom-0 w-[200%] animate-wave-fast"
-        style={{ animationDelay: '-5s' }}
+        style={{ animationDelay: '-1.5s' }}
         viewBox="0 0 2400 48"
         preserveAspectRatio="none"
       >
         <path
-          d="M0,40 Q150,28 300,40 Q450,52 600,40 Q750,28 900,40 Q1050,52 1200,40 Q1350,28 1500,40 Q1650,52 1800,40 Q1950,28 2100,40 Q2250,52 2400,40 L2400,48 L0,48 Z"
+          d="M0,42 Q150,28 300,42 Q450,56 600,42 Q750,28 900,42 Q1050,56 1200,42 Q1350,28 1500,42 Q1650,56 1800,42 Q1950,28 2100,42 Q2250,56 2400,42 L2400,48 L0,48 Z"
           fill="var(--primary)"
-          fillOpacity="0.4"
+          fillOpacity={0.4}
         />
       </svg>
     </div>

@@ -138,7 +138,7 @@
   }
 }
 
-/* 波浪动画 */
+/* 波浪动画 - 无缝循环版本 */
 @keyframes wave {
   0% {
     transform: translateX(0);
@@ -148,12 +148,17 @@
   }
 }
 
-.animate-wave {
+/* 专门用于双SVG无缝循环的动画 */
+.animate-wave-loop {
   animation: wave 8s linear infinite;
 }
 
 .animate-wave-slow {
   animation: wave 12s linear infinite;
+}
+
+.animate-wave {
+  animation: wave 8s linear infinite;
 }
 
 .animate-wave-fast {
