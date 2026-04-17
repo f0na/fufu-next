@@ -36,12 +36,12 @@ export function ProfileCard({
   return (
     <div
       className={cn(
-        'bg-card/80 backdrop-blur-sm rounded-xl p-2 border border-border shadow-lg flex flex-col items-center gap-1 w-[140px]',
+        'bg-card/80 backdrop-blur-sm rounded-xl p-2 border border-border flex flex-col items-center gap-1 w-[140px]',
         className
       )}
     >
       {/* 头像 */}
-      <div className="w-full aspect-square rounded-lg overflow-hidden border border-primary">
+      <div className="w-full aspect-square rounded-lg overflow-hidden">
         <Image
           src={avatar_url}
           alt="头像"

@@ -1,8 +1,19 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
   reactCompiler: true,
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 't.alcy.cc',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.loliapi.com',
+      },
+    ],
+  },
 };
 
 export default nextConfig;

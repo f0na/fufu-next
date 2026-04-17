@@ -27,6 +27,10 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
+      <head>
+        {/* 预加载 Cubism SDK */}
+        <script src="/live2d/live2dcubismcore.min.js" async />
+      </head>
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );

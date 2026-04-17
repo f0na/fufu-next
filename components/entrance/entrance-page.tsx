@@ -7,6 +7,7 @@ import { useState } from 'react'
 import { ProfileCard } from './profile-card'
 import { LikeButton } from './like-button'
 import { ClockWidget } from './clock-widget'
+import { WaveDivider } from '@/components/ui/wave-divider'
 
 type EntranceState = 'idle' | 'exiting'
 
@@ -45,6 +46,11 @@ export function EntrancePage() {
           unoptimized
         />
         <div className="absolute inset-0 bg-background/20" />
+      </div>
+
+      {/* 波浪分割 */}
+      <div className="absolute bottom-0 w-full">
+        <WaveDivider height={80} />
       </div>
 
       {/* 组件层 */}
