@@ -5,12 +5,16 @@ import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import {
   Search,
-  Sun,
-  Moon,
+  Palette,
   Menu,
   ChevronDown,
   X,
 } from 'lucide-react'
+
+const themes = [
+  { name: 'avemujica', label: 'AM', color: '#5a8fa8' },
+  { name: 'mygo', label: 'MG', color: '#ff8899' },
+]
 
 // 菜单项类型定义
 interface Menu_item {
@@ -123,16 +127,19 @@ export function Navbar({
   on_menu_click?: (key: string) => void
   current_page?: string
 }) {
-  const [is_dark, set_is_dark] = useState(false)
+  const [theme_idx, set_theme_idx] = useState(0)
   const [is_mobile_menu_open, set_is_mobile_menu_open] = useState(false)
   const [is_dropdown_open, set_is_dropdown_open] = useState(false)
   const [is_search_open, set_is_search_open] = useState(false)
 
   // 主题切换
   const toggle_theme = () => {
-    set_is_dark(!is_dark)
-    document.documentElement.classList.toggle('dark')
+    const new_idx = (theme_idx + 1) % themes.length
+    set_theme_idx(new_idx)
+    document.documentElement.setAttribute('data-theme', themes[new_idx].name)
   }
+
+  const current_theme = themes[theme_idx]
 
   // 下拉菜单项组件
   const Dropdown_item = ({ item }: { item: Menu_item }) => {
@@ -247,19 +254,19 @@ export function Navbar({
               <span>搜索</span>
             </button>
 
-            <Button
-              variant="ghost"
-              size="icon-sm"
-              className="text-foreground hover:text-primary"
+            {/* 主题切换按钮 */}
+            <button
               onClick={toggle_theme}
-              aria-label="切换主题"
-            >
-              {is_dark ? (
-                <Sun className="size-4" />
-              ) : (
-                <Moon className="size-4" />
+              className={cn(
+                'w-8 h-8 rounded-full flex items-center justify-center',
+                'transition-all duration-200',
+                'hover:bg-muted'
               )}
-            </Button>
+              style={{ color: current_theme.color }}
+              title={`当前: ${current_theme.label}`}
+            >
+              <Palette className="w-4 h-4" />
+            </button>
           </div>
         </div>
       </nav>
