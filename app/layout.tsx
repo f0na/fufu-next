@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { RightSidebarPortalProvider } from "@/context/right-sidebar-portal-context";
+import { GlobalLive2D } from "@/components/mascot/global-live2d";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,7 +33,12 @@ export default function RootLayout({
         {/* 预加载 Cubism SDK */}
         <script src="/live2d/live2dcubismcore.min.js" async />
       </head>
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <RightSidebarPortalProvider>
+          {children}
+          <GlobalLive2D />
+        </RightSidebarPortalProvider>
+      </body>
     </html>
   );
 }

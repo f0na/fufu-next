@@ -17,7 +17,7 @@ const exit_variants = {
     x: direction === 'left' ? '-100vw' : direction === 'right' ? '100vw' : 0,
     y: direction === 'up' ? '-100vh' : direction === 'down' ? '100vh' : 0,
     opacity: 0,
-    transition: { duration: 0.8, ease: 'easeInOut' },
+    transition: { duration: 0.8, ease: 'easeInOut' as const },
   }),
 }
 

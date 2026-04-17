@@ -1,10 +1,10 @@
 'use client'
 
+import { useLayoutEffect, useRef, useContext, ReactNode } from 'react'
 import { ProfileCard } from '@/components/entrance/profile-card'
 import { Announcement, AnnouncementItem } from '@/components/home/announcement'
-import { Live2DMascot } from '@/components/mascot/live2d-mascot'
+import { RightSidebarPortalContext } from '@/context/right-sidebar-portal-context'
 import { cn } from '@/lib/utils'
-import { ReactNode } from 'react'
 
 interface HomeLayoutProps {
   children: ReactNode
@@ -31,6 +31,19 @@ export function HomeLayout({
   announcement_props,
   className,
 }: HomeLayoutProps) {
+  const portal_target_ref = useRef<HTMLDivElement>(null)
+  const { set_portal_target } = useContext(RightSidebarPortalContext)
+
+  // 注册 portal target - 使用 useLayoutEffect 确保在渲染前设置
+  useLayoutEffect(() => {
+    if (portal_target_ref.current) {
+      set_portal_target(portal_target_ref.current)
+    }
+    return () => {
+      set_portal_target(null)
+    }
+  }, [set_portal_target])
+
   return (
     <div className={cn('w-full flex justify-center', className)}>
       {/* 三栏容器 - 黄金比例宽度 61.8% */}
@@ -54,9 +67,10 @@ export function HomeLayout({
             {children}
           </main>
 
-          {/* 右侧看板娘区域 - 仅桌面端显示 */}
+          {/* 右侧看板娘区域 - 仅桌面端显示，portal target 在顶部 */}
           <aside className="hidden lg:block lg:w-[200px] shrink-0 order-3">
-            <Live2DMascot />
+            {/* Portal target - Live2D 会渲染到这里 */}
+            <div ref={portal_target_ref} />
           </aside>
         </div>
       </div>
