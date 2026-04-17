@@ -1,7 +1,6 @@
 {
     "permissions": {
         "allow": [
-            "Bash(bunx playwright-cli:*)",
             "Bash(playwright-cli open:*)",
             "Bash(playwright-cli snapshot:*)",
             "Bash(playwright-cli click:*)",
