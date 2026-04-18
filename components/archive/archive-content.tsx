@@ -37,33 +37,26 @@ export function ArchiveContent({ className, profile_props, announcement_props }:
   const [year, set_year] = useState<string | undefined>(undefined)
   const [selected_tags, set_selected_tags] = useState<string[]>([])
   const [years, set_years] = useState<string[]>([])
+  const [all_tags, set_all_tags] = useState<string[]>([])
 
   // 使用 ref 防止重复加载
   const is_loading_ref = useRef(false)
 
-  // 从文章数据中提取年份
+  // 从 API 获取元数据（年份和标签）
   useEffect(() => {
-    const fetch_all_posts = async () => {
+    const fetch_meta = async () => {
       try {
-        const response = await fetch('/api/posts?limit=100')
+        const response = await fetch('/api/posts/meta')
         if (response.ok) {
           const data = await response.json()
-          const year_set = new Set<string>()
-
-          for (const post of data.posts) {
-            if (post.date) {
-              const year = post.date.split('-')[0]
-              if (year) year_set.add(year)
-            }
-          }
-
-          set_years(Array.from(year_set).sort((a, b) => Number(b) - Number(a)))
+          set_years(data.years || [])
+          set_all_tags(data.all_tags || [])
         }
       } catch (error) {
-        console.error('Failed to fetch all posts for meta:', error)
+        console.error('Failed to fetch posts meta:', error)
       }
     }
-    fetch_all_posts()
+    fetch_meta()
   }, [])
 
   // 获取文章列表 - 不使用 useCallback，避免依赖循环
@@ -192,6 +185,7 @@ export function ArchiveContent({ className, profile_props, announcement_props }:
               years={years}
               tags={selected_tags}
               onTagsChange={handle_tags_change}
+              all_tags={all_tags}
               is_portal_target={false}
             />
           </div>
@@ -215,6 +209,7 @@ export function ArchiveContent({ className, profile_props, announcement_props }:
             years={years}
             tags={selected_tags}
             onTagsChange={handle_tags_change}
+            all_tags={all_tags}
             is_portal_target={true}
           />
         </aside>

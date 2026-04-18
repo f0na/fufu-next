@@ -1,29 +1,17 @@
 import { NextResponse } from 'next/server'
-import { get_all_tags, get_all_years, get_posts } from '@/lib/posts'
+import { get_all_tags, get_all_years } from '@/lib/posts'
 
 export async function GET() {
   try {
-    // 使用get_posts来获取年份和标签信息
-    const response = get_posts({ limit: 100 })
-    const posts = response.posts
-
-    // 从文章中提取年份和标签
-    const year_set = new Set<string>()
-    const tag_set = new Set<string>()
-
-    for (const post of posts) {
-      if (post.date) {
-        const year = post.date.split('-')[0]
-        if (year) year_set.add(year)
-      }
-      for (const tag of post.tags) {
-        tag_set.add(tag)
-      }
-    }
+    // 使用专门的函数获取完整数据
+    const tag_counts = get_all_tags()
+    const year_counts = get_all_years()
 
     return NextResponse.json({
-      tags: Array.from(tag_set),
-      years: Array.from(year_set).sort((a, b) => Number(b) - Number(a)),
+      all_tags: Object.keys(tag_counts).sort(),
+      years: Object.keys(year_counts).sort((a, b) => Number(b) - Number(a)),
+      tag_counts,
+      year_counts,
     })
   } catch (error) {
     console.error('Failed to fetch meta:', error)

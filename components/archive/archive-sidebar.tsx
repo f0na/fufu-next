@@ -4,6 +4,7 @@ import { useLayoutEffect, useRef, useContext } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { RightSidebarPortalContext } from '@/context/right-sidebar-portal-context'
+import { ArrowUpDown, Calendar, Tag } from 'lucide-react'
 
 interface ArchiveSidebarProps {
   sort: 'asc' | 'desc'
@@ -13,6 +14,8 @@ interface ArchiveSidebarProps {
   years: string[]
   tags: string[]
   onTagsChange: (tags: string[]) => void
+  /** 所有可用标签 */
+  all_tags: string[]
   /** 是否作为 portal target 容器（仅桌面端需要） */
   is_portal_target?: boolean
 }
@@ -25,22 +28,21 @@ export function ArchiveSidebar({
   years,
   tags,
   onTagsChange,
+  all_tags,
   is_portal_target = false,
 }: ArchiveSidebarProps) {
   const portal_target_ref = useRef<HTMLDivElement>(null)
+  const portal_registered_ref = useRef(false)
   const { set_portal_target } = useContext(RightSidebarPortalContext)
 
-  // 仅在作为 portal target 时注册（桌面端）
+  // 只在首次挂载时注册 Portal Target，避免每次渲染重新注册导致看板娘重新加载
   useLayoutEffect(() => {
-    if (is_portal_target && portal_target_ref.current) {
+    if (is_portal_target && portal_target_ref.current && !portal_registered_ref.current) {
       set_portal_target(portal_target_ref.current)
+      portal_registered_ref.current = true
     }
-    return () => {
-      if (is_portal_target) {
-        set_portal_target(null)
-      }
-    }
-  }, [set_portal_target, is_portal_target])
+    // 不清理，保持 Portal Target 持久存在
+  }, [])
 
   // 标签多选处理
   const handle_tag_click = (tag_item: string) => {
@@ -64,7 +66,10 @@ export function ArchiveSidebar({
       {/* 排序选项 */}
       <Card size="sm">
         <CardHeader>
-          <CardTitle>排序</CardTitle>
+          <CardTitle className="flex items-center gap-2">
+            <ArrowUpDown className="h-4 w-4" />
+            排序
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="flex gap-2">
@@ -89,7 +94,10 @@ export function ArchiveSidebar({
       {/* 年份选择 */}
       <Card size="sm">
         <CardHeader>
-          <CardTitle>年份</CardTitle>
+          <CardTitle className="flex items-center gap-2">
+            <Calendar className="h-4 w-4" />
+            年份
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="flex flex-wrap gap-2">
@@ -117,7 +125,10 @@ export function ArchiveSidebar({
       {/* 标签筛选 */}
       <Card size="sm">
         <CardHeader>
-          <CardTitle>标签</CardTitle>
+          <CardTitle className="flex items-center gap-2">
+            <Tag className="h-4 w-4" />
+            标签
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="flex flex-wrap gap-2">
@@ -128,7 +139,7 @@ export function ArchiveSidebar({
             >
               全部
             </Button>
-            {['技术', 'Next.js', 'React', 'TypeScript', '生活', '音乐', '动漫', '编程'].map((tag_item) => (
+            {all_tags.map((tag_item) => (
               <Button
                 key={tag_item}
                 variant={tags.includes(tag_item) ? 'default' : 'outline'}
