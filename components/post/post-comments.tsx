@@ -1,6 +1,6 @@
 'use client'
 
-import { useSyncExternalStore } from 'react'
+import { useSyncExternalStore, useEffect } from 'react'
 import Giscus from '@giscus/react'
 import { cn } from '@/lib/utils'
 
@@ -19,6 +19,8 @@ interface PostCommentsProps {
   section_id?: string
   /** 自定义类名 */
   className?: string
+  /** 评论数变化回调 */
+  on_count_change?: (count: number) => void
 }
 
 /**
@@ -62,6 +64,7 @@ export function PostComments({
   mapping = 'pathname',
   section_id = 'comments',
   className,
+  on_count_change,
 }: PostCommentsProps) {
   // 使用 useSyncExternalStore 监听主题变化
   const theme = useSyncExternalStore(
@@ -69,6 +72,24 @@ export function PostComments({
     get_theme_snapshot,
     get_server_theme_snapshot
   )
+
+  // 监听 Giscus 元数据消息
+  useEffect(() => {
+    if (repo === 'placeholder/placeholder' || !on_count_change) return
+
+    const handle_message = (event: MessageEvent) => {
+      if (event.origin !== 'https://giscus.app') return
+
+      const data = event.data
+      if (data?.giscus && data.giscus.discussion) {
+        const count = data.giscus.discussion.totalCommentCount || 0
+        on_count_change(count)
+      }
+    }
+
+    window.addEventListener('message', handle_message)
+    return () => window.removeEventListener('message', handle_message)
+  }, [repo, on_count_change])
 
   // 如果使用占位符，显示未配置提示
   if (repo === 'placeholder/placeholder') {
@@ -107,7 +128,7 @@ export function PostComments({
           lang="zh-CN"
           theme={theme}
           reactionsEnabled="1"
-          emitMetadata="0"
+          emitMetadata="1"
           inputPosition="top"
           loading="lazy"
         />
@@ -116,10 +137,7 @@ export function PostComments({
   )
 }
 
-/**
- * 评论配置类型
- * 用于在页面级别配置评论系统参数
- */
+// 评论配置类型
 export interface CommentsConfig {
   repo: string
   repo_id: string
@@ -127,6 +145,9 @@ export interface CommentsConfig {
   category_id: string
   mapping?: 'pathname' | 'url' | 'title' | 'og:title'
 }
+
+// 评论数更新回调类型
+export type CommentsCountCallback = (count: number) => void
 
 /**
  * 创建评论配置的默认占位符

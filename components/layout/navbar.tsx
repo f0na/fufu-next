@@ -4,7 +4,19 @@ import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
-import { Search, Palette, Menu, X } from 'lucide-react'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import {
+  Search,
+  Palette,
+  Menu,
+  ChevronDown,
+  X,
+} from 'lucide-react'
 
 const themes = [
   { name: 'avemujica', label: 'AM', color: '#5a8fa8' },
@@ -19,6 +31,11 @@ const nav_items = [
   { label: '追番', key: 'anime', href: '/home?tab=anime' },
   { label: '相册', key: 'gallery', href: '/home?tab=gallery' },
   { label: '友人帐', key: 'friends', href: '/home?tab=friends' },
+]
+
+// 更多菜单项
+const more_items = [
+  { label: '网站状态', key: 'status', href: '/home?tab=status' },
 ]
 
 function SearchModal({
@@ -129,9 +146,9 @@ export function Navbar({
       <nav className="fixed top-0 left-1/2 -translate-x-1/2 z-50 bg-background/80 backdrop-blur-md rounded-b-lg border border-border shadow-sm">
         <div className="flex items-center gap-1 px-4 h-10">
           <div className="hidden md:flex items-center gap-1">
+            {/* 主导航项 */}
             {nav_items.map((item) =>
               on_menu_click ? (
-                // 首页内：使用按钮触发状态切换
                 <button
                   key={item.key}
                   onClick={() => on_menu_click(item.key)}
@@ -145,7 +162,6 @@ export function Navbar({
                   {item.label}
                 </button>
               ) : (
-                // 其他页面：使用 Link 跳转到首页
                 <Link
                   key={item.key}
                   href={item.href}
@@ -160,8 +176,39 @@ export function Navbar({
                 </Link>
               )
             )}
+
+            {/* 更多下拉菜单 */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="gap-0.5"
+                >
+                  更多
+                  <ChevronDown className="size-3.5" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start">
+                {more_items.map((item) =>
+                  on_menu_click ? (
+                    <DropdownMenuItem
+                      key={item.key}
+                      onClick={() => on_menu_click(item.key)}
+                    >
+                      {item.label}
+                    </DropdownMenuItem>
+                  ) : (
+                    <DropdownMenuItem key={item.key} asChild>
+                      <Link href={item.href}>{item.label}</Link>
+                    </DropdownMenuItem>
+                  )
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
 
+          {/* 移动端首页按钮 */}
           {on_menu_click ? (
             <button
               onClick={() => on_menu_click('home')}
@@ -178,6 +225,7 @@ export function Navbar({
             </Link>
           )}
 
+          {/* 搜索和主题 */}
           <div className="flex items-center gap-2">
             <button
               onClick={() => set_is_search_open(true)}
@@ -230,6 +278,32 @@ export function Navbar({
                   href={item.href}
                   onClick={() => set_is_mobile_menu_open(false)}
                   className="px-3 py-1.5 text-sm font-medium text-foreground hover:text-primary transition-colors rounded-lg"
+                >
+                  {item.label}
+                </Link>
+              )
+            )}
+            {/* 移动端更多项 */}
+            <div className="border-t border-border my-1" />
+            <span className="px-3 py-1 text-xs text-muted-foreground">更多</span>
+            {more_items.map((item) =>
+              on_menu_click ? (
+                <button
+                  key={item.key}
+                  onClick={() => {
+                    on_menu_click(item.key)
+                    set_is_mobile_menu_open(false)
+                  }}
+                  className="px-3 py-1.5 text-sm text-foreground hover:text-primary transition-colors rounded-lg pl-5"
+                >
+                  {item.label}
+                </button>
+              ) : (
+                <Link
+                  key={item.key}
+                  href={item.href}
+                  onClick={() => set_is_mobile_menu_open(false)}
+                  className="px-3 py-1.5 text-sm text-foreground hover:text-primary transition-colors rounded-lg pl-5"
                 >
                   {item.label}
                 </Link>

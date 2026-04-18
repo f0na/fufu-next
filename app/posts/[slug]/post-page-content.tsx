@@ -14,6 +14,7 @@ interface PostPageContentProps {
   content: string
   recommended_posts: Post[]
   comments_config: CommentsConfig
+  initial_comments_count?: number
 }
 
 export function PostPageContent({
@@ -21,9 +22,12 @@ export function PostPageContent({
   content,
   recommended_posts,
   comments_config,
+  initial_comments_count = 0,
 }: PostPageContentProps) {
   // 目录状态
   const [headings, set_headings] = useState<TocHeading[]>([])
+  // 评论数状态（初始值为服务端获取的数量）
+  const [comments_count, set_comments_count] = useState(initial_comments_count)
 
   return (
     <PostLayout
@@ -52,7 +56,7 @@ export function PostPageContent({
           cover={post.cover}
           likes={0}
           views={0}
-          comments_count={0}
+          comments_count={comments_count}
           excerpt={post.excerpt}
           headings={headings}
           comments_section_id="comments"
@@ -67,6 +71,7 @@ export function PostPageContent({
           category_id={comments_config.category_id}
           mapping={comments_config.mapping}
           section_id="comments"
+          on_count_change={set_comments_count}
         />
       }
     >

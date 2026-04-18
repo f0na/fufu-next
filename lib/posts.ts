@@ -249,3 +249,69 @@ export function get_recommended_posts(
 
   return posts_with_score
 }
+
+/**
+ * 从 GitHub Discussions 获取文章评论数
+ * 需要 GitHub Token 和仓库配置
+ */
+export async function get_comments_count(
+  pathname: string,
+  config: {
+    repo: string
+    repo_id: string
+    category_id: string
+    github_token: string
+  }
+): Promise<number> {
+  const { repo, category_id, github_token } = config
+
+  // 拆分仓库名
+  const [owner, name] = repo.split('/')
+
+  // GraphQL 查询 - 获取该分类下的所有 discussions
+  const query = `
+    query($owner: String!, $name: String!, $categoryId: ID) {
+      repository(owner: $owner, name: $name) {
+        discussions(first: 50, categoryId: $categoryId) {
+          nodes {
+            title
+            comments {
+              totalCount
+            }
+          }
+        }
+      }
+    }
+  `
+
+  try {
+    const response = await fetch('https://api.github.com/graphql', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${github_token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        query,
+        variables: {
+          owner,
+          name,
+          categoryId: category_id,
+        },
+      }),
+    })
+
+    const data = await response.json()
+
+    // 查找匹配 pathname 的 discussion
+    const discussions = data?.data?.repository?.discussions?.nodes || []
+    const matched = discussions.find(
+      (d: { title: string }) => d.title.includes(pathname)
+    )
+
+    return matched?.comments?.totalCount || 0
+  } catch (error) {
+    console.error('Failed to fetch comments count:', error)
+    return 0
+  }
+}
