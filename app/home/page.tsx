@@ -7,6 +7,7 @@ import { Footer } from '@/components/layout/footer'
 import { HeroSection } from '@/components/home/hero-section'
 import { HomeLayout } from '@/components/home/home-layout'
 import { ArchiveContent } from '@/components/archive/archive-content'
+import { LinksContent } from '@/components/links/links-content'
 
 // 首页内容（与关于页一致）
 function HomeContent() {
@@ -22,16 +23,6 @@ function HomeContent() {
       <p className="text-muted-foreground leading-relaxed">
         网站正在建设中，敬请期待更多内容。
       </p>
-    </div>
-  )
-}
-
-// 链接内容
-function LinksContent() {
-  return (
-    <div className="space-y-4">
-      <h1 className="text-2xl font-semibold text-foreground">链接</h1>
-      <p className="text-muted-foreground">收藏链接页面，正在建设中...</p>
     </div>
   )
 }
@@ -88,8 +79,9 @@ export default function HomePage() {
     set_current_page(key)
   }
 
-  // 判断是否为归档页
+  // 判断是否为归档页或链接页
   const is_archive = current_page === 'archive'
+  const is_links = current_page === 'links'
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -126,6 +118,32 @@ export default function HomePage() {
               }}
             />
           </div>
+        ) : is_links ? (
+          // 链接页使用特殊布局：三栏（左侧边栏 + 链接列表 + 筛选栏）
+          <div className="w-full max-w-[61.8%] px-4">
+            <LinksContent
+              profile_props={{
+                name: 'Fufu',
+                greeting: 'Ciallo～(∠・ω< )⌒★',
+              }}
+              announcement_props={{
+                title: '公告',
+                announcements: [
+                  {
+                    id: '1',
+                    content: '欢迎来到我的小站！这里是我的个人空间，记录着生活中的点点滴滴。',
+                    time: '2026-04-17',
+                  },
+                  {
+                    id: '2',
+                    content: '网站正在建设中，敬请期待更多内容。',
+                    time: '2026-04-16',
+                  },
+                ],
+                max_display: 3,
+              }}
+            />
+          </div>
         ) : (
           // 其他页面使用标准HomeLayout
           <HomeLayout
@@ -153,7 +171,6 @@ export default function HomePage() {
             {/* 内容区 */}
             <div className="bg-card/80 backdrop-blur-sm rounded-xl border border-border p-6">
               {current_page === 'home' && <HomeContent />}
-              {current_page === 'links' && <LinksContent />}
               {current_page === 'anime' && <AnimeContent />}
               {current_page === 'gallery' && <GalleryContent />}
               {current_page === 'friends' && <FriendsContent />}

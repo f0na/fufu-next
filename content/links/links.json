@@ -1,0 +1,154 @@
+{
+  "links": [
+    {
+      "id": "link-001",
+      "title": "Next.js 官方文档",
+      "url": "https://nextjs.org/docs",
+      "description": "Next.js 官方文档，包含完整的 API 参考和指南",
+      "tags": ["技术", "文档", "Next.js", "React"],
+      "created_at": "2024-01-15",
+      "is_starred": true
+    },
+    {
+      "id": "link-002",
+      "title": "React 官方文档",
+      "url": "https://react.dev",
+      "description": "React 官方文档，学习 React 的最佳资源",
+      "tags": ["技术", "文档", "React"],
+      "created_at": "2024-01-20",
+      "is_starred": true
+    },
+    {
+      "id": "link-003",
+      "title": "Tailwind CSS",
+      "url": "https://tailwindcss.com",
+      "description": "实用优先的 CSS 框架，快速构建现代网站",
+      "tags": ["技术", "前端", "设计", "CSS"],
+      "created_at": "2024-02-01",
+      "is_starred": true
+    },
+    {
+      "id": "link-004",
+      "title": "shadcn/ui",
+      "url": "https://ui.shadcn.com",
+      "description": "精美的 React 组件库，基于 Radix UI 和 Tailwind CSS",
+      "tags": ["技术", "前端", "React", "设计"],
+      "created_at": "2024-02-10",
+      "is_starred": true
+    },
+    {
+      "id": "link-005",
+      "title": "MDN Web Docs",
+      "url": "https://developer.mozilla.org",
+      "description": "Mozilla 开发者网络，Web 技术权威文档",
+      "tags": ["技术", "文档", "前端"],
+      "created_at": "2024-02-15"
+    },
+    {
+      "id": "link-006",
+      "title": "TypeScript 官方文档",
+      "url": "https://www.typescriptlang.org/docs",
+      "description": "TypeScript 官方文档和手册",
+      "tags": ["技术", "文档", "TypeScript"],
+      "created_at": "2024-02-20"
+    },
+    {
+      "id": "link-007",
+      "title": "Vercel",
+      "url": "https://vercel.com",
+      "description": "Next.js 团队开发的部署平台，支持前端项目一键部署",
+      "tags": ["技术", "工具", "Next.js"],
+      "created_at": "2024-03-01",
+      "is_starred": true
+    },
+    {
+      "id": "link-008",
+      "title": "Figma",
+      "url": "https://www.figma.com",
+      "description": "在线协作设计工具，UI/UX 设计首选",
+      "tags": ["工具", "设计"],
+      "created_at": "2024-03-05"
+    },
+    {
+      "id": "link-009",
+      "title": "GitHub",
+      "url": "https://github.com",
+      "description": "全球最大的代码托管平台",
+      "tags": ["技术", "工具"],
+      "created_at": "2024-03-10",
+      "is_starred": true
+    },
+    {
+      "id": "link-010",
+      "title": "Dribbble",
+      "url": "https://dribbble.com",
+      "description": "设计师作品展示平台，获取设计灵感",
+      "tags": ["设计", "前端"],
+      "created_at": "2024-03-15"
+    },
+    {
+      "id": "link-011",
+      "title": "CodePen",
+      "url": "https://codepen.io",
+      "description": "在线代码编辑器，前端代码分享平台",
+      "tags": ["技术", "前端", "工具"],
+      "created_at": "2024-03-20"
+    },
+    {
+      "id": "link-012",
+      "title": "Can I Use",
+      "url": "https://caniuse.com",
+      "description": "Web 技术浏览器兼容性查询",
+      "tags": ["技术", "文档", "前端"],
+      "created_at": "2024-03-25"
+    },
+    {
+      "id": "link-013",
+      "title": "npm",
+      "url": "https://www.npmjs.com",
+      "description": "JavaScript 包管理器，Node.js 包仓库",
+      "tags": ["技术", "工具", "前端"],
+      "created_at": "2024-04-01"
+    },
+    {
+      "id": "link-014",
+      "title": "ESLint",
+      "url": "https://eslint.org",
+      "description": "JavaScript 代码检查工具",
+      "tags": ["技术", "工具", "前端"],
+      "created_at": "2024-04-05"
+    },
+    {
+      "id": "link-015",
+      "title": "Prettier",
+      "url": "https://prettier.io",
+      "description": "代码格式化工具，支持多种语言",
+      "tags": ["技术", "工具", "前端"],
+      "created_at": "2024-04-10"
+    },
+    {
+      "id": "link-016",
+      "title": "Storybook",
+      "url": "https://storybook.js.org",
+      "description": "UI 组件开发环境，独立开发测试组件",
+      "tags": ["技术", "工具", "React", "前端"],
+      "created_at": "2024-04-15"
+    },
+    {
+      "id": "link-017",
+      "title": "Radix UI",
+      "url": "https://www.radix-ui.com",
+      "description": "无样式的 React UI 组件库，可访问性优先",
+      "tags": ["技术", "前端", "React"],
+      "created_at": "2024-04-20"
+    },
+    {
+      "id": "link-018",
+      "title": "Lucide Icons",
+      "url": "https://lucide.dev",
+      "description": "精美的开源图标库，支持 React 和多种框架",
+      "tags": ["技术", "设计", "前端"],
+      "created_at": "2024-04-25"
+    }
+  ]
+}
