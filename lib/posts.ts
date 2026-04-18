@@ -6,6 +6,19 @@ import type { Post, PostsResponse } from './types/post'
 const POSTS_DIR = path.join(process.cwd(), 'content/posts')
 
 /**
+ * 将日期转换为字符串
+ */
+function date_to_string(date: unknown): string {
+  if (typeof date === 'string') {
+    return date
+  }
+  if (date instanceof Date) {
+    return date.toISOString().split('T')[0]
+  }
+  return ''
+}
+
+/**
  * 获取所有文章的元数据
  */
 function get_all_posts(): Post[] {
@@ -33,7 +46,8 @@ function get_all_posts(): Post[] {
     posts.push({
       slug,
       title: data.title || slug,
-      date: data.date || '',
+      // 确保日期是字符串
+      date: date_to_string(data.date),
       tags: Array.isArray(data.tags) ? data.tags : [],
       cover: data.cover,
       excerpt: data.excerpt || generate_excerpt(content),
@@ -165,4 +179,73 @@ export function get_all_years(): Record<string, number> {
 export function get_post_by_slug(slug: string): Post | null {
   const posts = get_all_posts()
   return posts.find((post) => post.slug === slug) || null
+}
+
+/**
+ * 获取文章完整内容
+ */
+export function get_post_content(slug: string): { content: string } | null {
+  // 查找对应的文件
+  const md_path = path.join(POSTS_DIR, `${slug}.md`)
+  const mdx_path = path.join(POSTS_DIR, `${slug}.mdx`)
+
+  let file_path: string | null = null
+  if (fs.existsSync(md_path)) {
+    file_path = md_path
+  } else if (fs.existsSync(mdx_path)) {
+    file_path = mdx_path
+  }
+
+  if (!file_path) {
+    return null
+  }
+
+  try {
+    const file_content = fs.readFileSync(file_path, 'utf-8')
+    const { content } = matter(file_content)
+    return { content }
+  } catch {
+    return null
+  }
+}
+
+/**
+ * 获取推荐文章
+ * 基于标签匹配返回相关文章
+ */
+export function get_recommended_posts(
+  current_post: Post,
+  max_recommendations: number = 3
+): Post[] {
+  if (!current_post.tags || current_post.tags.length === 0) {
+    return []
+  }
+
+  const all_posts = get_all_posts()
+
+  // 计算每篇文章的标签匹配分数
+  const posts_with_score = all_posts
+    .filter((post) => post.slug !== current_post.slug) // 排除当前文章
+    .map((post) => {
+      // 计算匹配的标签数量
+      const matching_tags = post.tags.filter((tag) =>
+        current_post.tags.includes(tag)
+      )
+      return {
+        post,
+        score: matching_tags.length,
+      }
+    })
+    .filter((item) => item.score > 0) // 只保留有匹配的文章
+    .sort((a, b) => {
+      // 先按匹配分数降序，再按日期降序
+      if (b.score !== a.score) {
+        return b.score - a.score
+      }
+      return new Date(b.post.date).getTime() - new Date(a.post.date).getTime()
+    })
+    .slice(0, max_recommendations)
+    .map((item) => item.post)
+
+  return posts_with_score
 }

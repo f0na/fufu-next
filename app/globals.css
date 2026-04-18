@@ -164,3 +164,14 @@
 .animate-wave-fast {
   animation: wave 11s linear infinite;
 }
+
+/* 覆盖 Shiki 代码块的白色背景 */
+.shiki-wrapper .shiki,
+.shiki-wrapper .shiki pre,
+.shiki-wrapper .shiki code {
+  background-color: transparent !important;
+}
+
+.shiki-wrapper {
+  background-color: var(--muted);
+}

@@ -1,47 +1,24 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
+import Link from 'next/link'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import {
-  Search,
-  Palette,
-  Menu,
-  ChevronDown,
-  X,
-} from 'lucide-react'
+import { Search, Palette, Menu, X } from 'lucide-react'
 
 const themes = [
   { name: 'avemujica', label: 'AM', color: '#5a8fa8' },
   { name: 'mygo', label: 'MG', color: '#ff8899' },
 ]
 
-interface Menu_item {
-  label: string
-  key: string
-  children?: Menu_item[]
-}
-
-const menu_items: Menu_item[] = [
-  { label: '首页', key: 'home' },
-  { label: '归档', key: 'archive' },
-  { label: '链接', key: 'links' },
-  { label: '追番', key: 'anime' },
-  { label: '相册', key: 'gallery' },
-  { label: '友人帐', key: 'friends' },
-  {
-    label: '更多',
-    key: 'more',
-    children: [
-      { label: '网站状态', key: 'status' },
-    ],
-  },
+// 导航菜单项
+const nav_items = [
+  { label: '首页', key: 'home', href: '/home' },
+  { label: '归档', key: 'archive', href: '/home?tab=archive' },
+  { label: '链接', key: 'links', href: '/home?tab=links' },
+  { label: '追番', key: 'anime', href: '/home?tab=anime' },
+  { label: '相册', key: 'gallery', href: '/home?tab=gallery' },
+  { label: '友人帐', key: 'friends', href: '/home?tab=friends' },
 ]
 
 function SearchModal({
@@ -152,34 +129,12 @@ export function Navbar({
       <nav className="fixed top-0 left-1/2 -translate-x-1/2 z-50 bg-background/80 backdrop-blur-md rounded-b-lg border border-border shadow-sm">
         <div className="flex items-center gap-1 px-4 h-10">
           <div className="hidden md:flex items-center gap-1">
-            {menu_items.map((item) =>
-              item.children ? (
-                <DropdownMenu key={item.key}>
-                  <DropdownMenuTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="gap-0.5"
-                    >
-                      {item.label}
-                      <ChevronDown className="size-3.5" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="start">
-                    {item.children.map((child) => (
-                      <DropdownMenuItem
-                        key={child.key}
-                        onClick={() => on_menu_click?.(child.key)}
-                      >
-                        {child.label}
-                      </DropdownMenuItem>
-                    ))}
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              ) : (
+            {nav_items.map((item) =>
+              on_menu_click ? (
+                // 首页内：使用按钮触发状态切换
                 <button
                   key={item.key}
-                  onClick={() => on_menu_click?.(item.key)}
+                  onClick={() => on_menu_click(item.key)}
                   className={cn(
                     'px-3 py-1.5 text-sm font-medium transition-colors whitespace-nowrap',
                     current_page === item.key
@@ -189,16 +144,39 @@ export function Navbar({
                 >
                   {item.label}
                 </button>
+              ) : (
+                // 其他页面：使用 Link 跳转到首页
+                <Link
+                  key={item.key}
+                  href={item.href}
+                  className={cn(
+                    'px-3 py-1.5 text-sm font-medium transition-colors whitespace-nowrap',
+                    current_page === item.key
+                      ? 'text-primary bg-primary/10 rounded-md'
+                      : 'text-foreground hover:text-primary'
+                  )}
+                >
+                  {item.label}
+                </Link>
               )
             )}
           </div>
 
-          <button
-            className="md:hidden px-3 py-1.5 text-sm font-medium text-foreground hover:text-primary transition-colors"
-            onClick={() => on_menu_click?.('home')}
-          >
-            首页
-          </button>
+          {on_menu_click ? (
+            <button
+              onClick={() => on_menu_click('home')}
+              className="md:hidden px-3 py-1.5 text-sm font-medium text-foreground hover:text-primary transition-colors"
+            >
+              首页
+            </button>
+          ) : (
+            <Link
+              href="/home"
+              className="md:hidden px-3 py-1.5 text-sm font-medium text-foreground hover:text-primary transition-colors"
+            >
+              首页
+            </Link>
+          )}
 
           <div className="flex items-center gap-2">
             <button
@@ -234,38 +212,27 @@ export function Navbar({
       {is_mobile_menu_open && (
         <div className="md:hidden fixed top-14 left-4 z-[60] bg-card rounded-xl border border-border shadow-sm min-w-[150px]">
           <div className="flex flex-col gap-1 px-2 py-2">
-            {menu_items.map((item) =>
-              item.children ? (
-                <div key={item.key} className="flex flex-col">
-                  <span className="px-3 py-1.5 text-sm font-medium text-muted-foreground">
-                    {item.label}
-                  </span>
-                  <div className="pl-4">
-                    {item.children.map((child) => (
-                      <button
-                        key={child.key}
-                        onClick={() => {
-                          on_menu_click?.(child.key)
-                          set_is_mobile_menu_open(false)
-                        }}
-                        className="block px-3 py-1.5 text-sm text-foreground hover:text-primary transition-colors rounded-lg"
-                      >
-                        {child.label}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              ) : (
+            {nav_items.map((item) =>
+              on_menu_click ? (
                 <button
                   key={item.key}
                   onClick={() => {
-                    on_menu_click?.(item.key)
+                    on_menu_click(item.key)
                     set_is_mobile_menu_open(false)
                   }}
                   className="px-3 py-1.5 text-sm font-medium text-foreground hover:text-primary transition-colors rounded-lg"
                 >
                   {item.label}
                 </button>
+              ) : (
+                <Link
+                  key={item.key}
+                  href={item.href}
+                  onClick={() => set_is_mobile_menu_open(false)}
+                  className="px-3 py-1.5 text-sm font-medium text-foreground hover:text-primary transition-colors rounded-lg"
+                >
+                  {item.label}
+                </Link>
               )
             )}
           </div>

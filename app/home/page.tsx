@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { Navbar } from '@/components/layout/navbar'
 import { Footer } from '@/components/layout/footer'
 import { HeroSection } from '@/components/home/hero-section'
@@ -76,7 +77,12 @@ function StatusContent() {
 }
 
 export default function HomePage() {
-  const [current_page, set_current_page] = useState('home')
+  const search_params = useSearchParams()
+  const [current_page, set_current_page] = useState(() => {
+    // 从 URL 参数获取初始页面
+    const tab = search_params.get('tab')
+    return tab || 'home'
+  })
 
   const handle_menu_click = (key: string) => {
     set_current_page(key)

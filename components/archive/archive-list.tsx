@@ -1,6 +1,7 @@
 "use client"
 
 import { RefObject } from "react"
+import Link from "next/link"
 import { Separator } from "@/components/ui/separator"
 import { Spinner } from "@/components/ui/spinner"
 import { cn } from "@/lib/utils"
@@ -59,21 +60,18 @@ export function ArchiveList({ posts, isLoading, hasMore, sentinelRef }: ArchiveL
           <ul className="space-y-2">
             {grouped_posts[year].map((post) => (
               <li key={post.slug}>
-                <article
+                <Link
+                  href={`/posts/${post.slug}`}
                   className={cn(
-                    "flex items-start gap-4 py-2 cursor-pointer",
+                    "flex items-start gap-4 py-2",
                     "hover:text-primary transition-colors"
                   )}
-                  onClick={() => {
-                    // TODO: 跳转到文章详情页
-                    console.log("Navigate to post:", post.slug)
-                  }}
                 >
                   <time className="text-sm text-muted-foreground shrink-0 tabular-nums">
                     {format_date(post.date)}
                   </time>
                   <span className="line-clamp-2">{post.title}</span>
-                </article>
+                </Link>
               </li>
             ))}
           </ul>

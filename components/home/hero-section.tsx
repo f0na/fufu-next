@@ -68,7 +68,7 @@ export function HeroSection() {
   return (
     <div
       ref={container_ref}
-      className={cn('relative w-full overflow-hidden')}
+      className={cn('relative w-full overflow-hidden z-0')}
       style={{ height: `${height}vh` }}
     >
       {/* 背景图片 */}

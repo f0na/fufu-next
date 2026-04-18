@@ -5,6 +5,10 @@ export interface Post {
   tags: string[]
   cover?: string
   excerpt?: string
+  content?: string
+  views?: number
+  likes?: number
+  comments_count?: number
 }
 
 export interface PostsResponse {
