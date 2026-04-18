@@ -35,7 +35,7 @@ export function ProfileCard({
   className,
 }: ProfileCardProps) {
   return (
-    <Card size="sm" className={cn('flex flex-col items-center', className)}>
+    <Card size="sm" className={cn('flex flex-col items-center max-w-[140px]', className)}>
       <CardContent className="flex flex-col items-center gap-1 w-full">
         {/* 头像 */}
         <div className="w-full aspect-square rounded-lg overflow-hidden">
