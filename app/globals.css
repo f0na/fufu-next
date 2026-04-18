@@ -154,13 +154,13 @@
 }
 
 .animate-wave-slow {
-  animation: wave 12s linear infinite;
+  animation: wave 22s linear infinite;
 }
 
 .animate-wave {
-  animation: wave 8s linear infinite;
+  animation: wave 16s linear infinite;
 }
 
 .animate-wave-fast {
-  animation: wave 5s linear infinite;
+  animation: wave 11s linear infinite;
 }

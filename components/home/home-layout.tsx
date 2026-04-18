@@ -21,6 +21,7 @@ interface HomeLayoutProps {
   announcement_props?: {
     title?: string
     announcements?: AnnouncementItem[]
+    max_display?: number
   }
   className?: string
 }

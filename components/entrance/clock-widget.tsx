@@ -1,12 +1,11 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { Card, CardContent } from '@/components/ui/card'
 
 interface ClockWidgetProps {
   className?: string
 }
-
-import { cn } from '@/lib/utils'
 
 export function ClockWidget({ className }: ClockWidgetProps) {
   const [time, set_time] = useState('00:00:00')
@@ -27,15 +26,10 @@ export function ClockWidget({ className }: ClockWidgetProps) {
   }, [])
 
   return (
-    <div
-      className={cn(
-        'bg-card/80 backdrop-blur-sm rounded-xl px-3 py-2 border border-border shadow-lg',
-        className
-      )}
-    >
-      <div className="text-lg font-mono text-foreground tracking-wider">
+    <Card size="sm" className={className}>
+      <CardContent className="text-lg font-mono tracking-wider">
         {time}
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   )
 }

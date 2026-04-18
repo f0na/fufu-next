@@ -4,6 +4,12 @@ import { useState, useEffect, useRef } from 'react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import {
   Search,
   Palette,
   Menu,
@@ -16,14 +22,12 @@ const themes = [
   { name: 'mygo', label: 'MG', color: '#ff8899' },
 ]
 
-// 菜单项类型定义
 interface Menu_item {
   label: string
   key: string
   children?: Menu_item[]
 }
 
-// 菜单配置
 const menu_items: Menu_item[] = [
   { label: '首页', key: 'home' },
   { label: '归档', key: 'archive' },
@@ -40,7 +44,6 @@ const menu_items: Menu_item[] = [
   },
 ]
 
-// 搜索弹窗组件
 function SearchModal({
   is_open,
   on_close,
@@ -57,7 +60,6 @@ function SearchModal({
     }
   }, [is_open])
 
-  // ESC 关闭
   useEffect(() => {
     const handle_keydown = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && is_open) {
@@ -75,16 +77,12 @@ function SearchModal({
       className="fixed inset-0 z-[100] flex items-start justify-center pt-20"
       onClick={on_close}
     >
-      {/* 背景遮罩 */}
       <div className="absolute inset-0 bg-background/80 backdrop-blur-sm" />
-
-      {/* 搜索框容器 */}
       <div
         className="relative w-full max-w-xl mx-4"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="bg-card border border-border rounded-xl shadow-lg overflow-hidden">
-          {/* 搜索输入 */}
           <div className="flex items-center gap-2 px-4 py-3 border-b border-border">
             <Search className="size-4 text-muted-foreground" />
             <input
@@ -104,14 +102,10 @@ function SearchModal({
               </button>
             )}
           </div>
-
-          {/* 搜索提示 */}
           <div className="px-4 py-6 text-center text-muted-foreground text-sm">
             输入关键词搜索内容
           </div>
         </div>
-
-        {/* 关闭提示 */}
         <div className="mt-2 text-center text-muted-foreground text-xs">
           按 ESC 或点击空白处关闭
         </div>
@@ -129,10 +123,8 @@ export function Navbar({
 }) {
   const [theme_idx, set_theme_idx] = useState(0)
   const [is_mobile_menu_open, set_is_mobile_menu_open] = useState(false)
-  const [is_dropdown_open, set_is_dropdown_open] = useState(false)
   const [is_search_open, set_is_search_open] = useState(false)
 
-  // 主题切换
   const toggle_theme = () => {
     const new_idx = (theme_idx + 1) % themes.length
     set_theme_idx(new_idx)
@@ -141,56 +133,8 @@ export function Navbar({
 
   const current_theme = themes[theme_idx]
 
-  // 下拉菜单项组件
-  const Dropdown_item = ({ item }: { item: Menu_item }) => {
-    if (!item.children) return null
-
-    return (
-      <div className="relative">
-        <button
-          className="flex items-center gap-0.5 px-3 py-1.5 text-sm font-medium text-foreground hover:text-primary transition-colors"
-          onMouseEnter={() => set_is_dropdown_open(true)}
-          onMouseLeave={() => set_is_dropdown_open(false)}
-        >
-          {item.label}
-          <ChevronDown
-            className={cn(
-              'size-3.5 transition-transform duration-200',
-              is_dropdown_open && 'rotate-180'
-            )}
-          />
-        </button>
-        {/* 下拉菜单 */}
-        {is_dropdown_open && (
-          <div
-            className="absolute top-full left-0 min-w-[120px] bg-card border border-border rounded-lg z-50 overflow-hidden"
-            onMouseEnter={() => set_is_dropdown_open(true)}
-            onMouseLeave={() => set_is_dropdown_open(false)}
-          >
-            {item.children.map((child, index) => (
-              <button
-                key={child.key}
-                onClick={() => on_menu_click?.(child.key)}
-                className={cn(
-                  'block w-full text-left px-4 py-2 text-sm text-foreground',
-                  'hover:bg-primary hover:text-primary-foreground',
-                  'transition-colors',
-                  index === 0 && 'rounded-t-lg',
-                  index === item.children!.length - 1 && 'rounded-b-lg'
-                )}
-              >
-                {child.label}
-              </button>
-            ))}
-          </div>
-        )}
-      </div>
-    )
-  }
-
   return (
     <>
-      {/* 移动端汉堡菜单按钮 - 固定在左边 */}
       <Button
         variant="ghost"
         size="icon-sm"
@@ -205,14 +149,33 @@ export function Navbar({
         )}
       </Button>
 
-      {/* 导航栏 - 居中不占满宽度 */}
       <nav className="fixed top-0 left-1/2 -translate-x-1/2 z-50 bg-background/80 backdrop-blur-md rounded-b-lg border border-border shadow-sm">
         <div className="flex items-center gap-1 px-4 h-10">
-          {/* 桌面端菜单 */}
           <div className="hidden md:flex items-center gap-1">
             {menu_items.map((item) =>
               item.children ? (
-                <Dropdown_item key={item.key} item={item} />
+                <DropdownMenu key={item.key}>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="gap-0.5"
+                    >
+                      {item.label}
+                      <ChevronDown className="size-3.5" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start">
+                    {item.children.map((child) => (
+                      <DropdownMenuItem
+                        key={child.key}
+                        onClick={() => on_menu_click?.(child.key)}
+                      >
+                        {child.label}
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
               ) : (
                 <button
                   key={item.key}
@@ -230,7 +193,6 @@ export function Navbar({
             )}
           </div>
 
-          {/* 移动端显示首页链接 */}
           <button
             className="md:hidden px-3 py-1.5 text-sm font-medium text-foreground hover:text-primary transition-colors"
             onClick={() => on_menu_click?.('home')}
@@ -238,9 +200,7 @@ export function Navbar({
             首页
           </button>
 
-          {/* 功能按钮 */}
           <div className="flex items-center gap-2">
-            {/* 搜索框 - 点击弹出搜索组件 */}
             <button
               onClick={() => set_is_search_open(true)}
               className={cn(
@@ -254,7 +214,6 @@ export function Navbar({
               <span>搜索</span>
             </button>
 
-            {/* 主题切换按钮 */}
             <button
               onClick={toggle_theme}
               className={cn(
@@ -271,7 +230,7 @@ export function Navbar({
         </div>
       </nav>
 
-      {/* 移动端下拉菜单 */}
+      {/* 移动端菜单 */}
       {is_mobile_menu_open && (
         <div className="md:hidden fixed top-14 left-4 z-[60] bg-card rounded-xl border border-border shadow-sm min-w-[150px]">
           <div className="flex flex-col gap-1 px-2 py-2">
@@ -313,7 +272,6 @@ export function Navbar({
         </div>
       )}
 
-      {/* 搜索弹窗 */}
       <SearchModal
         is_open={is_search_open}
         on_close={() => set_is_search_open(false)}

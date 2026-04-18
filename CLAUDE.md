@@ -21,7 +21,7 @@ next16 + react19 + tailwindcss + shadcn + bun
 - 一定要多使用`tavily`等技能搜索相关最新资料来保证项目代码质量
 - api文档里找不到的接口一定要告知用户，禁止瞎猜
 - 所有技能需要工具已下载，一定要先直接使用`playwright-cli`、`ctx7`命令，不要添加包管理器脚本前缀，例如`npx playwright-cli@latest`、`npx ctx7@latest`，这些都是在直接命令无法使用时使用
-- 优先使用shadcn/ui的组件，尽量不要自创组件
+- 优先使用`shadcn/ui`的组件，尽量不要自创组件
 - **禁止修改已实现的任何组件**
 - **禁止修改已实现的任何组件**
 - **禁止修改已实现的任何组件**

@@ -46,26 +46,27 @@ export function useInfiniteScroll({
   const observerRef = useRef<IntersectionObserver | null>(null)
   const is_loading_ref = useRef(false)
   const initial_load_done_ref = useRef(false)
+  const onLoadMoreRef = useRef(onLoadMore)
+  const hasMoreRef = useRef(hasMore)
+
+  // 保持 ref 同步
+  useEffect(() => {
+    onLoadMoreRef.current = onLoadMore
+  }, [onLoadMore])
+
+  useEffect(() => {
+    hasMoreRef.current = hasMore
+  }, [hasMore])
 
   // 更新hasMore状态
   useEffect(() => {
     setHasMore(has_more)
   }, [has_more])
 
-  // 标记初始加载完成（当 disabled 从 true 变为 false 时）
-  useEffect(() => {
-    if (!disabled) {
-      // 延迟标记，确保初始数据已渲染
-      const timer = setTimeout(() => {
-        initial_load_done_ref.current = true
-      }, 100)
-      return () => clearTimeout(timer)
-    }
-  }, [disabled])
-
-  const loadMore = useCallback(async () => {
+  // 内部加载函数，不依赖外部状态
+  const doLoadMore = useCallback(async () => {
     // 防止重复加载
-    if (is_loading_ref.current || !hasMore) {
+    if (is_loading_ref.current || !hasMoreRef.current) {
       return
     }
 
@@ -73,14 +74,34 @@ export function useInfiniteScroll({
     setIsLoading(true)
 
     try {
-      await onLoadMore()
+      await onLoadMoreRef.current()
     } catch (error) {
       console.error("Failed to load more data:", error)
     } finally {
       setIsLoading(false)
       is_loading_ref.current = false
     }
-  }, [hasMore, onLoadMore])
+  }, [])
+
+  // 标记初始加载完成（当 disabled 从 true 变为 false 时）
+  useEffect(() => {
+    if (!disabled) {
+      // 使用 requestAnimationFrame 确保初始数据已渲染
+      const raf_id = requestAnimationFrame(() => {
+        initial_load_done_ref.current = true
+        // 检查哨兵元素是否已在视口中，如果是则触发加载
+        const sentinel = sentinelRef.current
+        if (sentinel && hasMoreRef.current && !is_loading_ref.current) {
+          const rect = sentinel.getBoundingClientRect()
+          const in_viewport = rect.top < window.innerHeight && rect.bottom > 0
+          if (in_viewport) {
+            doLoadMore()
+          }
+        }
+      })
+      return () => cancelAnimationFrame(raf_id)
+    }
+  }, [disabled, doLoadMore])
 
   // 设置Intersection Observer
   useEffect(() => {
@@ -96,8 +117,8 @@ export function useInfiniteScroll({
       (entries) => {
         const entry = entries[0]
         // 只有在初始加载完成后且元素进入视口时才触发
-        if (entry.isIntersecting && hasMore && !is_loading_ref.current && initial_load_done_ref.current) {
-          loadMore()
+        if (entry.isIntersecting && hasMoreRef.current && !is_loading_ref.current && initial_load_done_ref.current) {
+          doLoadMore()
         }
       },
       {
@@ -114,10 +135,10 @@ export function useInfiniteScroll({
         observerRef.current.disconnect()
       }
     }
-  }, [hasMore, loadMore, root_margin, root, disabled])
+  }, [doLoadMore, root_margin, root, disabled])
 
   return {
-    loadMore,
+    loadMore: doLoadMore,
     isLoading,
     hasMore,
     sentinelRef,

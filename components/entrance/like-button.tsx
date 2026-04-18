@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { Heart } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
 
 interface LikeButtonProps {
   initial_count?: number
@@ -35,23 +36,25 @@ export function LikeButton({ initial_count = 0, className }: LikeButtonProps) {
   }
 
   return (
-    <button
+    <Button
+      variant="outline"
+      size="sm"
       onClick={handle_like}
+      disabled={is_liked}
       className={cn(
-        'bg-card/80 backdrop-blur-sm rounded-2xl px-3 py-2 border border-border shadow-lg flex items-center gap-2 transition-all hover:bg-accent w-fit',
-        is_liked ? 'cursor-default' : 'cursor-pointer hover:scale-105',
+        'backdrop-blur-sm gap-2',
+        is_liked ? 'cursor-default' : 'hover:scale-105',
         className
       )}
-      disabled={is_liked}
     >
       <Heart
         className={cn(
-          'w-4 h-4',
+          'size-4',
           is_liked ? 'fill-destructive text-destructive' : 'text-foreground',
           is_animating ? 'animate-ping' : ''
         )}
       />
-      <span className="text-foreground font-medium text-sm">{count}</span>
-    </button>
+      <span className="font-medium">{count}</span>
+    </Button>
   )
 }
