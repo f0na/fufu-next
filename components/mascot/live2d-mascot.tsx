@@ -123,12 +123,10 @@ export function Live2DMascot({
         app.stage.addChild(model)
         model.autoUpdate = true
 
-        // 设置初始表情
-        try {
-          model.expression(DEFAULT_EXPRESSION)
-        } catch {}
-
         set_is_loaded(true)
+
+        // 不设置初始表情，避免加载时序问题
+        // 表情会在用户点击时按需加载
       } catch (error) {
         console.error('Failed to initialize Live2D:', error)
       }
@@ -189,16 +187,13 @@ export function Live2DMascot({
     const model = model_ref.current
     if (model) {
       const random_exp = EXPRESSIONS[Math.floor(Math.random() * EXPRESSIONS.length)]
-      try {
-        model.expression(random_exp)
-        setTimeout(() => {
-          if (model_ref.current) {
-            try {
-              model_ref.current.expression(DEFAULT_EXPRESSION)
-            } catch {}
-          }
-        }, 3000)
-      } catch {}
+      // expression() 返回 Promise，需要用 .catch() 处理错误
+      model.expression(random_exp)?.catch(() => {})
+      setTimeout(() => {
+        if (model_ref.current) {
+          model_ref.current.expression(DEFAULT_EXPRESSION)?.catch(() => {})
+        }
+      }, 3000)
     }
 
     // 显示对话
