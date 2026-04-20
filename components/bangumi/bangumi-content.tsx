@@ -222,7 +222,7 @@ export function BangumiContent({
       {/* 三栏布局 */}
       <div className="flex flex-col lg:flex-row gap-6">
         {/* 左侧边栏 */}
-        <aside className="hidden lg:flex flex-col gap-4 w-[20%] shrink-0">
+        <aside className="hidden lg:flex flex-col gap-4 w-[16%] shrink-0">
           <ProfileCard {...profile_props} className="w-full" />
           <Announcement
             title={announcement_props?.title}

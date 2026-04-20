@@ -158,11 +158,11 @@ export function ArchiveContent({ className, profile_props, announcement_props }:
   }
 
   return (
-    <div className={className}>
+    <div className="w-full max-w-[61.8%] px-4 py-8">
       {/* 三栏布局 - 桌面端显示三栏，移动端只显示侧边栏和列表 */}
       <div className="flex flex-col lg:flex-row gap-6">
-        {/* 左侧边栏 - 桌面端约20%，移动端隐藏 */}
-        <aside className="hidden lg:flex flex-col gap-4 w-[20%] shrink-0">
+        {/* 左侧边栏 - 桌面端约16%，移动端隐藏 */}
+        <aside className="hidden lg:flex flex-col gap-4 w-[16%] shrink-0">
           <ProfileCard
             {...profile_props}
             className="w-full"

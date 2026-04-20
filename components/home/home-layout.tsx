@@ -52,10 +52,10 @@ export function HomeLayout({
         {/* 桌面端三栏布局，移动端单栏 */}
         <div className="flex flex-col lg:flex-row gap-6">
           {/* 左侧栏 */}
-          <aside className="flex flex-col gap-4 lg:w-[180px] shrink-0 order-1">
+          <aside className="flex flex-col gap-4 lg:w-[16%] shrink-0 order-1">
             <ProfileCard
               {...profile_props}
-              className="w-full lg:w-auto"
+              className="w-full"
             />
             <Announcement
               title={announcement_props?.title}
@@ -69,7 +69,7 @@ export function HomeLayout({
           </main>
 
           {/* 右侧看板娘区域 - 仅桌面端显示，portal target 在顶部 */}
-          <aside className="hidden lg:block lg:w-[200px] shrink-0 order-3">
+          <aside className="hidden lg:block lg:w-[20%] shrink-0 order-3">
             {/* Portal target - Live2D 会渲染到这里 */}
             <div ref={portal_target_ref} />
           </aside>

@@ -61,10 +61,10 @@ export function PostLayout({
         {/* 桌面端三栏布局，移动端单栏 */}
         <div className="flex flex-col lg:flex-row gap-6">
           {/* 左侧栏 */}
-          <aside className="flex flex-col gap-4 lg:w-[180px] shrink-0 order-1">
+          <aside className="flex flex-col gap-4 lg:w-[16%] shrink-0 order-1">
             <ProfileCard
               {...profile_props}
-              className="w-full lg:w-auto"
+              className="w-full"
             />
             <Announcement
               title={announcement_props?.title}
@@ -86,7 +86,7 @@ export function PostLayout({
           </main>
 
           {/* 右侧栏 - 文章信息 */}
-          <aside className="hidden lg:flex lg:w-[200px] shrink-0 order-3 flex-col gap-4">
+          <aside className="hidden lg:flex lg:w-[20%] shrink-0 order-3 flex-col gap-4">
             {/* Portal target - Live2D 会渲染到这里（顶部） */}
             <div ref={portal_target_ref} />
             {right_sidebar}
