@@ -158,7 +158,7 @@ export function ArchiveContent({ className, profile_props, announcement_props }:
   }
 
   return (
-    <div className="w-full max-w-[61.8%] px-4 py-8">
+    <div className={className}>
       {/* 三栏布局 - 桌面端显示三栏，移动端只显示侧边栏和列表 */}
       <div className="flex flex-col lg:flex-row gap-6">
         {/* 左侧边栏 - 桌面端约16%，移动端隐藏 */}
