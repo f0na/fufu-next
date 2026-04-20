@@ -1,10 +1,10 @@
 'use client'
 
 import { useState, useEffect, useCallback, useRef } from 'react'
+import { useRouter } from 'next/navigation'
 import { ProfileCard } from '@/components/entrance/profile-card'
 import { Announcement } from '@/components/home/announcement'
 import { LatestSection } from './latest-section'
-import { BangumiDetail } from './bangumi-detail'
 import { BangumiSidebar } from './bangumi-sidebar'
 import { RecordsSection } from './records-section'
 import { SearchSection } from './search-section'
@@ -12,7 +12,7 @@ import { get_storage } from '@/lib/bangumi-storage'
 import { fetch_resources } from '@/lib/anime-garden-client'
 import { fetch_calendar, fetch_bangumi_subject } from '@/lib/bangumi-api'
 import { merge_bangumi_with_resources, convert_subject_info_to_subject } from '@/lib/bangumi-utils'
-import type { BangumiRecord, BangumiStatus, BangumiSubject, WeekdayGroup } from '@/lib/types/bangumi'
+import type { BangumiRecord, BangumiSubject, WeekdayGroup } from '@/lib/types/bangumi'
 import type { AnnouncementItem } from '@/components/home/announcement'
 
 interface BangumiContentProps {
@@ -37,17 +37,12 @@ export function BangumiContent({
   profile_props,
   announcement_props,
 }: BangumiContentProps) {
+  const router = useRouter()
   const [view, set_view] = useState<'latest' | 'records' | 'search'>('latest')
   const [subjects, set_subjects] = useState<BangumiSubject[]>([])
   const [weekday_groups, set_weekday_groups] = useState<WeekdayGroup[]>([])
   const [records, set_records] = useState<BangumiRecord[]>([])
   const [is_loading, set_is_loading] = useState(false)
-
-  // 详情页状态
-  const [selected_subject_id, set_selected_subject_id] = useState<number | null>(null)
-  const [selected_subject, set_selected_subject] = useState<BangumiSubject | null>(null)
-  const [is_detail_loading, set_detail_loading] = useState(false)
-  const [resource_error, set_resource_error] = useState<string | null>(null)
 
   const sidebar_ref = useRef<HTMLDivElement>(null)
   const is_loading_ref = useRef(false)
@@ -106,48 +101,10 @@ export function BangumiContent({
     load_bangumi()
   }, [])
 
-  // 点击卡片进入详情 - 渐进式加载
-  const handle_card_click = useCallback(async (subject_id: number) => {
-    set_selected_subject_id(subject_id)
-    set_selected_subject(null)
-    set_detail_loading(true)
-    set_resource_error(null)
-
-    try {
-      // 从 Bangumi API 获取完整信息（先显示基本信息）
-      const bgm_info = await fetch_bangumi_subject(subject_id)
-      if (bgm_info) {
-        // 立即显示番剧基本信息（无资源）
-        const basic_subject = convert_subject_info_to_subject(bgm_info)
-        set_selected_subject(basic_subject)
-        set_detail_loading(false)
-
-        // 然后加载资源列表
-        try {
-          const resources_result = await fetch_resources({
-            pageSize: 200,
-            subject: subject_id,
-          })
-          const full_subject = merge_bangumi_with_resources(bgm_info, resources_result.resources)
-          set_selected_subject(full_subject)
-        } catch (resource_err) {
-          console.error('Failed to load resources:', resource_err)
-          set_resource_error(resource_err instanceof Error ? resource_err.message : '资源加载失败，请稍后重试')
-        }
-      }
-    } catch (error) {
-      console.error('Failed to load subject details:', error)
-      set_detail_loading(false)
-      set_resource_error(error instanceof Error ? error.message : '番剧信息加载失败')
-    }
-  }, [])
-
-  // 关闭详情页
-  const handle_close_detail = useCallback(() => {
-    set_selected_subject_id(null)
-    set_selected_subject(null)
-    set_resource_error(null)
-  }, [])
+  // 点击卡片进入详情页
+  const handle_card_click = useCallback((subject_id: number) => {
+    router.push(`/anime/${subject_id}`)
+  }, [router])
 
   // 删除记录
   const handle_delete_record = useCallback(async (id: string) => {
@@ -155,67 +112,6 @@ export function BangumiContent({
     await storage.delete(id)
     set_records(prev => prev.filter(r => r.id !== id))
   }, [])
-
-  // 状态变更
-  const handle_status_change = useCallback(async (subject_id: number, status: BangumiStatus) => {
-    const storage = get_storage()
-    const subject = selected_subject
-    if (!subject) return
-
-    const existing_record = records.find(r => r.subject_id === subject_id)
-
-    if (existing_record) {
-      await storage.update(existing_record.id, { status })
-      set_records(prev =>
-        prev.map(r => r.id === existing_record.id ? { ...r, status } : r)
-      )
-    } else {
-      const display_name = subject.name_cn || subject.name
-      const new_record: BangumiRecord = {
-        id: generate_id(),
-        subject_id,
-        title: display_name,
-        status,
-        progress: '',
-        added_at: new Date().toISOString(),
-        cover_url: subject.images?.large || subject.cover_url,
-        fansub: subject.fansub,
-      }
-      await storage.add(new_record)
-      set_records(prev => [...prev, new_record])
-    }
-  }, [records, selected_subject])
-
-  // 进度变更
-  const handle_progress_change = useCallback(async (subject_id: number, progress: string) => {
-    const storage = get_storage()
-    const subject = selected_subject
-    if (!subject) return
-
-    const existing_record = records.find(r => r.subject_id === subject_id)
-
-    if (existing_record) {
-      await storage.update(existing_record.id, { progress })
-      set_records(prev =>
-        prev.map(r => r.id === existing_record.id ? { ...r, progress } : r)
-      )
-    } else {
-      // 如果没有记录，先创建一个默认状态为"在看"的记录
-      const display_name = subject.name_cn || subject.name
-      const new_record: BangumiRecord = {
-        id: generate_id(),
-        subject_id,
-        title: display_name,
-        status: 'watching',
-        progress,
-        added_at: new Date().toISOString(),
-        cover_url: subject.images?.large || subject.cover_url,
-        fansub: subject.fansub,
-      }
-      await storage.add(new_record)
-      set_records(prev => [...prev, new_record])
-    }
-  }, [records, selected_subject])
 
   return (
     <div className="w-full max-w-[61.8%] px-4 py-8">
@@ -232,36 +128,25 @@ export function BangumiContent({
 
         {/* 中间内容区 */}
         <main className="flex-1 lg:w-[60%] min-w-0">
-          {selected_subject_id ? (
-            // 详情页
-            <BangumiDetail
-              subject={selected_subject}
-              is_loading={is_detail_loading}
-              resource_error={resource_error}
-              on_close={handle_close_detail}
+          {view === 'search' ? (
+            <SearchSection
+              records={records}
+              on_card_click={handle_card_click}
+            />
+          ) : view === 'latest' ? (
+            <LatestSection
+              weekday_groups={weekday_groups}
+              subjects={subjects}
+              records={records}
+              is_loading={is_loading}
+              on_card_click={handle_card_click}
             />
           ) : (
-            // 视图切换
-            view === 'search' ? (
-              <SearchSection
-                records={records}
-                on_card_click={handle_card_click}
-              />
-            ) : view === 'latest' ? (
-              <LatestSection
-                weekday_groups={weekday_groups}
-                subjects={subjects}
-                records={records}
-                is_loading={is_loading}
-                on_card_click={handle_card_click}
-              />
-            ) : (
-              <RecordsSection
-                records={records}
-                on_delete={handle_delete_record}
-                on_card_click={handle_card_click}
-              />
-            )
+            <RecordsSection
+              records={records}
+              on_delete={handle_delete_record}
+              on_card_click={handle_card_click}
+            />
           )}
         </main>
 
@@ -270,18 +155,14 @@ export function BangumiContent({
           <BangumiSidebar
             view={view}
             on_view_change={set_view}
-            selected_subject={selected_subject}
+            selected_subject={null}
             records={records}
-            on_status_change={handle_status_change}
-            on_progress_change={handle_progress_change}
+            on_status_change={() => {}}
+            on_progress_change={() => {}}
             portal_ref={sidebar_ref}
           />
         </aside>
       </div>
     </div>
   )
-}
-
-function generate_id(): string {
-  return `record_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`
 }

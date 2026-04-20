@@ -1,28 +1,10 @@
 import { PageWrapper } from '@/components/layout/page-wrapper'
 import { HomeLayout } from '@/components/home/home-layout'
 
-// 首页内容
-function HomeContent() {
+// 相册页
+export default function GalleryPage() {
   return (
-    <div className="space-y-4">
-      <h1 className="text-2xl font-semibold text-foreground">网站介绍</h1>
-      <p className="text-muted-foreground leading-relaxed">
-        这里是可爱芙芙的小窝，欢迎大家^^
-      </p>
-      <p className="text-muted-foreground leading-relaxed">
-        这里是我的个人空间，记录着生活中的点点滴滴。
-      </p>
-      <p className="text-muted-foreground leading-relaxed">
-        网站正在建设中，敬请期待更多内容。
-      </p>
-    </div>
-  )
-}
-
-// 首页（Server Component）
-export default function HomePage() {
-  return (
-    <PageWrapper current_page="home">
+    <PageWrapper current_page="gallery">
       <HomeLayout
         profile_props={{
           name: 'Fufu',
@@ -45,9 +27,11 @@ export default function HomePage() {
           max_display: 3,
         }}
       >
-        {/* 内容区 */}
         <div className="bg-card/80 backdrop-blur-sm rounded-xl border border-border p-6">
-          <HomeContent />
+          <div className="space-y-4">
+            <h1 className="text-2xl font-semibold text-foreground">相册</h1>
+            <p className="text-muted-foreground">相册页面，正在建设中...</p>
+          </div>
         </div>
       </HomeLayout>
     </PageWrapper>

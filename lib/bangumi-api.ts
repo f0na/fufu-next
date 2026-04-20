@@ -1,7 +1,16 @@
 import type { BangumiSubjectInfo } from './types/bangumi'
 
-// 使用本地 API 代理（解决 CORS 和 User-Agent 问题）
-const API_PROXY = '/api/bangumi'
+// 在服务端使用完整 URL，在客户端使用相对路径
+const get_api_url = () => {
+  if (typeof window === 'undefined') {
+    // 服务端环境
+    return process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
+  }
+  // 客户端环境
+  return ''
+}
+
+const API_PROXY = `${get_api_url()}/api/bangumi`
 
 // 条目类型枚举
 export const SUBJECT_TYPES = {

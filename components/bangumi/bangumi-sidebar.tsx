@@ -16,7 +16,7 @@ const status_labels: Record<BangumiStatus, string> = {
 }
 
 interface BangumiSidebarProps {
-  view: 'latest' | 'records' | 'search'
+  view: 'latest' | 'records' | 'search' | 'detail'
   on_view_change: (view: 'latest' | 'records' | 'search') => void
   selected_subject: BangumiSubject | null
   records: BangumiRecord[]

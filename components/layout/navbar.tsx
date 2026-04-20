@@ -26,16 +26,16 @@ const themes = [
 // 导航菜单项
 const nav_items = [
   { label: '首页', key: 'home', href: '/home' },
-  { label: '归档', key: 'archive', href: '/home?tab=archive' },
-  { label: '链接', key: 'links', href: '/home?tab=links' },
-  { label: '追番', key: 'anime', href: '/home?tab=anime' },
-  { label: '相册', key: 'gallery', href: '/home?tab=gallery' },
-  { label: '友人帐', key: 'friends', href: '/home?tab=friends' },
+  { label: '归档', key: 'archive', href: '/archive' },
+  { label: '链接', key: 'links', href: '/links' },
+  { label: '追番', key: 'anime', href: '/anime' },
+  { label: '相册', key: 'gallery', href: '/gallery' },
+  { label: '友人帐', key: 'friends', href: '/friends' },
 ]
 
 // 更多菜单项
 const more_items = [
-  { label: '网站状态', key: 'status', href: '/home?tab=status' },
+  { label: '网站状态', key: 'status', href: '/status' },
 ]
 
 function SearchModal({
@@ -109,10 +109,8 @@ function SearchModal({
 }
 
 export function Navbar({
-  on_menu_click,
   current_page,
 }: {
-  on_menu_click?: (key: string) => void
   current_page?: string
 }) {
   const [theme_idx, set_theme_idx] = useState(0)
@@ -147,35 +145,20 @@ export function Navbar({
         <div className="flex items-center gap-1 px-4 h-10">
           <div className="hidden md:flex items-center gap-1">
             {/* 主导航项 */}
-            {nav_items.map((item) =>
-              on_menu_click ? (
-                <button
-                  key={item.key}
-                  onClick={() => on_menu_click(item.key)}
-                  className={cn(
-                    'px-3 py-1.5 text-sm font-medium transition-colors whitespace-nowrap',
-                    current_page === item.key
-                      ? 'text-primary bg-primary/10 rounded-md'
-                      : 'text-foreground hover:text-primary'
-                  )}
-                >
-                  {item.label}
-                </button>
-              ) : (
-                <Link
-                  key={item.key}
-                  href={item.href}
-                  className={cn(
-                    'px-3 py-1.5 text-sm font-medium transition-colors whitespace-nowrap',
-                    current_page === item.key
-                      ? 'text-primary bg-primary/10 rounded-md'
-                      : 'text-foreground hover:text-primary'
-                  )}
-                >
-                  {item.label}
-                </Link>
-              )
-            )}
+            {nav_items.map((item) => (
+              <Link
+                key={item.key}
+                href={item.href}
+                className={cn(
+                  'px-3 py-1.5 text-sm font-medium transition-colors whitespace-nowrap',
+                  current_page === item.key
+                    ? 'text-primary bg-primary/10 rounded-md'
+                    : 'text-foreground hover:text-primary'
+                )}
+              >
+                {item.label}
+              </Link>
+            ))}
 
             {/* 更多下拉菜单 */}
             <DropdownMenu>
@@ -190,40 +173,22 @@ export function Navbar({
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="start">
-                {more_items.map((item) =>
-                  on_menu_click ? (
-                    <DropdownMenuItem
-                      key={item.key}
-                      onClick={() => on_menu_click(item.key)}
-                    >
-                      {item.label}
-                    </DropdownMenuItem>
-                  ) : (
-                    <DropdownMenuItem key={item.key} asChild>
-                      <Link href={item.href}>{item.label}</Link>
-                    </DropdownMenuItem>
-                  )
-                )}
+                {more_items.map((item) => (
+                  <DropdownMenuItem key={item.key} asChild>
+                    <Link href={item.href}>{item.label}</Link>
+                  </DropdownMenuItem>
+                ))}
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
 
           {/* 移动端首页按钮 */}
-          {on_menu_click ? (
-            <button
-              onClick={() => on_menu_click('home')}
-              className="md:hidden px-3 py-1.5 text-sm font-medium text-foreground hover:text-primary transition-colors"
-            >
-              首页
-            </button>
-          ) : (
-            <Link
-              href="/home"
-              className="md:hidden px-3 py-1.5 text-sm font-medium text-foreground hover:text-primary transition-colors"
-            >
-              首页
-            </Link>
-          )}
+          <Link
+            href="/home"
+            className="md:hidden px-3 py-1.5 text-sm font-medium text-foreground hover:text-primary transition-colors"
+          >
+            首页
+          </Link>
 
           {/* 搜索和主题 */}
           <div className="flex items-center gap-2">
@@ -260,55 +225,29 @@ export function Navbar({
       {is_mobile_menu_open && (
         <div className="md:hidden fixed top-14 left-4 z-[60] bg-card rounded-xl border border-border shadow-sm min-w-[150px]">
           <div className="flex flex-col gap-1 px-2 py-2">
-            {nav_items.map((item) =>
-              on_menu_click ? (
-                <button
-                  key={item.key}
-                  onClick={() => {
-                    on_menu_click(item.key)
-                    set_is_mobile_menu_open(false)
-                  }}
-                  className="px-3 py-1.5 text-sm font-medium text-foreground hover:text-primary transition-colors rounded-lg"
-                >
-                  {item.label}
-                </button>
-              ) : (
-                <Link
-                  key={item.key}
-                  href={item.href}
-                  onClick={() => set_is_mobile_menu_open(false)}
-                  className="px-3 py-1.5 text-sm font-medium text-foreground hover:text-primary transition-colors rounded-lg"
-                >
-                  {item.label}
-                </Link>
-              )
-            )}
+            {nav_items.map((item) => (
+              <Link
+                key={item.key}
+                href={item.href}
+                onClick={() => set_is_mobile_menu_open(false)}
+                className="px-3 py-1.5 text-sm font-medium text-foreground hover:text-primary transition-colors rounded-lg"
+              >
+                {item.label}
+              </Link>
+            ))}
             {/* 移动端更多项 */}
             <div className="border-t border-border my-1" />
             <span className="px-3 py-1 text-xs text-muted-foreground">更多</span>
-            {more_items.map((item) =>
-              on_menu_click ? (
-                <button
-                  key={item.key}
-                  onClick={() => {
-                    on_menu_click(item.key)
-                    set_is_mobile_menu_open(false)
-                  }}
-                  className="px-3 py-1.5 text-sm text-foreground hover:text-primary transition-colors rounded-lg pl-5"
-                >
-                  {item.label}
-                </button>
-              ) : (
-                <Link
-                  key={item.key}
-                  href={item.href}
-                  onClick={() => set_is_mobile_menu_open(false)}
-                  className="px-3 py-1.5 text-sm text-foreground hover:text-primary transition-colors rounded-lg pl-5"
-                >
-                  {item.label}
-                </Link>
-              )
-            )}
+            {more_items.map((item) => (
+              <Link
+                key={item.key}
+                href={item.href}
+                onClick={() => set_is_mobile_menu_open(false)}
+                className="px-3 py-1.5 text-sm text-foreground hover:text-primary transition-colors rounded-lg pl-5"
+              >
+                {item.label}
+              </Link>
+            ))}
           </div>
         </div>
       )}

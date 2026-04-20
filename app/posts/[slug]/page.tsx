@@ -1,8 +1,6 @@
 import { notFound } from 'next/navigation'
 import { get_post_by_slug, get_post_content, get_posts, get_recommended_posts, get_comments_count } from '@/lib/posts'
-import { Navbar } from '@/components/layout/navbar'
-import { Footer } from '@/components/layout/footer'
-import { HeroSection } from '@/components/home/hero-section'
+import { PageWrapper } from '@/components/layout/page-wrapper'
 import type { CommentsConfig } from '@/components/post/post-comments'
 import { PostPageContent } from './post-page-content'
 
@@ -59,26 +57,14 @@ export default async function PostPage({ params }: PageProps) {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
-      {/* 导航栏 */}
-      <Navbar current_page="archive" />
-
-      {/* 图片区域（含波浪分割） */}
-      <HeroSection />
-
-      {/* 主内容区域 */}
-      <div className="flex-1 flex justify-center py-8">
-        <PostPageContent
-          post={post}
-          content={content_result.content}
-          recommended_posts={recommended_posts}
-          comments_config={comments_config}
-          initial_comments_count={initial_comments_count}
-        />
-      </div>
-
-      {/* 页脚 */}
-      <Footer />
-    </div>
+    <PageWrapper current_page="archive">
+      <PostPageContent
+        post={post}
+        content={content_result.content}
+        recommended_posts={recommended_posts}
+        comments_config={comments_config}
+        initial_comments_count={initial_comments_count}
+      />
+    </PageWrapper>
   )
 }

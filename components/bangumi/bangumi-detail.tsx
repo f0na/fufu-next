@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -15,7 +16,7 @@ interface BangumiDetailProps {
   subject: BangumiSubject | null
   is_loading: boolean
   resource_error?: string | null
-  on_close: () => void
+  on_close?: () => void
 }
 
 export function BangumiDetail({
@@ -40,9 +41,11 @@ export function BangumiDetail({
   if (is_loading || !subject) {
     return (
       <div className="flex flex-col gap-4">
-        <Button variant="ghost" onClick={on_close} className="self-start">
-          <ArrowLeft className="size-4" />
-          返回列表
+        <Button variant="ghost" asChild className="self-start">
+          <Link href="/anime">
+            <ArrowLeft className="size-4" />
+            返回列表
+          </Link>
         </Button>
         <div className="flex gap-4">
           <Skeleton className="w-[160px] aspect-[3/4]" />
@@ -61,9 +64,11 @@ export function BangumiDetail({
   return (
     <div className="flex flex-col gap-4">
       {/* 返回按钮 - 左对齐 */}
-      <Button variant="ghost" onClick={on_close} className="self-start">
-        <ArrowLeft className="size-4" />
-        返回列表
+      <Button variant="ghost" asChild className="self-start">
+        <Link href="/anime">
+          <ArrowLeft className="size-4" />
+          返回列表
+        </Link>
       </Button>
 
       {/* 封面 + 基本信息（并排） */}
