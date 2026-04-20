@@ -41,8 +41,12 @@ export function ArchiveSidebar({
       set_portal_target(portal_target_ref.current)
       portal_registered_ref.current = true
     }
-    // 不清理，保持 Portal Target 持久存在
-  }, [])
+    return () => {
+      // 清理时重置 portal target 和注册状态
+      set_portal_target(null)
+      portal_registered_ref.current = false
+    }
+  }, [set_portal_target, is_portal_target])
 
   // 标签多选处理
   const handle_tag_click = (tag_item: string) => {

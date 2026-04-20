@@ -40,8 +40,12 @@ export function LinksSidebar({
       set_portal_target(portal_target_ref.current)
       portal_registered_ref.current = true
     }
-    // 不清理，保持 Portal Target 持久存在
-  }, []) // 空依赖数组，只在挂载时执行一次
+    return () => {
+      // 清理时重置 portal target 和注册状态
+      set_portal_target(null)
+      portal_registered_ref.current = false
+    }
+  }, [set_portal_target, is_portal_target])
 
   // 使用 ref 跟踪最新的 tags，避免闭包问题
   const tags_ref = useRef(tags)

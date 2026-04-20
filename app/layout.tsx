@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { RightSidebarPortalProvider } from "@/context/right-sidebar-portal-context";
 import { GlobalLive2D } from "@/components/mascot/global-live2d";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,10 +35,12 @@ export default function RootLayout({
         <script src="/live2d/live2dcubismcore.min.js" async />
       </head>
       <body className="min-h-full flex flex-col">
-        <RightSidebarPortalProvider>
-          {children}
-          <GlobalLive2D />
-        </RightSidebarPortalProvider>
+        <TooltipProvider>
+          <RightSidebarPortalProvider>
+            {children}
+            <GlobalLive2D />
+          </RightSidebarPortalProvider>
+        </TooltipProvider>
       </body>
     </html>
   );

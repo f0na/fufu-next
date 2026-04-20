@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { Navbar } from '@/components/layout/navbar'
 import { Footer } from '@/components/layout/footer'
@@ -8,6 +8,8 @@ import { HeroSection } from '@/components/home/hero-section'
 import { HomeLayout } from '@/components/home/home-layout'
 import { ArchiveContent } from '@/components/archive/archive-content'
 import { LinksContent } from '@/components/links/links-content'
+import { BangumiContent } from '@/components/bangumi/bangumi-content'
+import { Spinner } from '@/components/ui/spinner'
 
 // 首页内容（与关于页一致）
 function HomeContent() {
@@ -30,10 +32,27 @@ function HomeContent() {
 // 追番内容
 function AnimeContent() {
   return (
-    <div className="space-y-4">
-      <h1 className="text-2xl font-semibold text-foreground">追番</h1>
-      <p className="text-muted-foreground">追番记录页面，正在建设中...</p>
-    </div>
+    <BangumiContent
+      profile_props={{
+        name: 'Fufu',
+        greeting: 'Ciallo～(∠・ω< )⌒★',
+      }}
+      announcement_props={{
+        title: '公告',
+        announcements: [
+          {
+            id: '1',
+            content: '欢迎来到我的小站！这里是我的个人空间，记录着生活中的点点滴滴。',
+            time: '2026-04-17',
+          },
+          {
+            id: '2',
+            content: '网站正在建设中，敬请期待更多内容。',
+            time: '2026-04-16',
+          },
+        ],
+      }}
+    />
   )
 }
 
@@ -67,7 +86,8 @@ function StatusContent() {
   )
 }
 
-export default function HomePage() {
+// 主页面内容（使用 useSearchParams）
+function HomePageContent() {
   const search_params = useSearchParams()
   const [current_page, set_current_page] = useState(() => {
     // 从 URL 参数获取初始页面
@@ -82,6 +102,7 @@ export default function HomePage() {
   // 判断是否为归档页或链接页
   const is_archive = current_page === 'archive'
   const is_links = current_page === 'links'
+  const is_anime = current_page === 'anime'
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -144,6 +165,9 @@ export default function HomePage() {
               }}
             />
           </div>
+        ) : is_anime ? (
+          // 番剧页使用特殊布局
+          <AnimeContent />
         ) : (
           // 其他页面使用标准HomeLayout
           <HomeLayout
@@ -171,7 +195,6 @@ export default function HomePage() {
             {/* 内容区 */}
             <div className="bg-card/80 backdrop-blur-sm rounded-xl border border-border p-6">
               {current_page === 'home' && <HomeContent />}
-              {current_page === 'anime' && <AnimeContent />}
               {current_page === 'gallery' && <GalleryContent />}
               {current_page === 'friends' && <FriendsContent />}
               {current_page === 'status' && <StatusContent />}
@@ -183,5 +206,18 @@ export default function HomePage() {
       {/* 页脚 */}
       <Footer />
     </div>
+  )
+}
+
+// 导出的页面组件（包裹 Suspense）
+export default function HomePage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex flex-col bg-background items-center justify-center">
+        <Spinner className="size-8" />
+      </div>
+    }>
+      <HomePageContent />
+    </Suspense>
   )
 }
