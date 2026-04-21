@@ -1,11 +1,15 @@
 import { PageWrapper } from '@/components/layout/page-wrapper'
-import { HomeLayout } from '@/components/home/home-layout'
+import { GalleryContent } from '@/components/gallery'
+import { get_galleries } from '@/lib/gallery'
 
-// 相册页
+// 相册列表页
 export default function GalleryPage() {
+  const galleries = get_galleries()
+
   return (
     <PageWrapper current_page="gallery">
-      <HomeLayout
+      <GalleryContent
+        galleries={galleries}
         profile_props={{
           name: 'Fufu',
           greeting: 'Ciallo～(∠・ω< )⌒★',
@@ -24,16 +28,8 @@ export default function GalleryPage() {
               time: '2026-04-16',
             },
           ],
-          max_display: 3,
         }}
-      >
-        <div className="bg-card/80 backdrop-blur-sm rounded-xl border border-border p-6">
-          <div className="space-y-4">
-            <h1 className="text-2xl font-semibold text-foreground">相册</h1>
-            <p className="text-muted-foreground">相册页面，正在建设中...</p>
-          </div>
-        </div>
-      </HomeLayout>
+      />
     </PageWrapper>
   )
 }
