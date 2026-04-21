@@ -1,0 +1,41 @@
+{
+  "friends": [
+    {
+      "id": "1",
+      "name": "示例友人A",
+      "url": "https://example.com",
+      "description": "这是一个示例友链站点，用于展示友人帐卡片效果。",
+      "created_at": "2026-04-01"
+    },
+    {
+      "id": "2",
+      "name": "技术博客",
+      "url": "https://tech-blog.example.org",
+      "avatar": "https://www.loliapi.com/acg/pp/",
+      "description": "分享前端技术和编程心得的技术博客。",
+      "created_at": "2026-03-15"
+    },
+    {
+      "id": "3",
+      "name": "二次元小站",
+      "url": "https://anime-site.example.net",
+      "description": "记录动漫、游戏和二次元文化的小站。",
+      "created_at": "2026-02-20"
+    },
+    {
+      "id": "4",
+      "name": "摄影空间",
+      "url": "https://photo-gallery.example.io",
+      "avatar": "https://www.loliapi.com/acg/pp/",
+      "description": "摄影作品展示与分享。",
+      "created_at": "2026-01-10"
+    },
+    {
+      "id": "5",
+      "name": "生活随笔",
+      "url": "https://life-notes.example.me",
+      "description": "记录日常生活的点滴感悟。",
+      "created_at": "2025-12-25"
+    }
+  ]
+}

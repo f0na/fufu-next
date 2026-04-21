@@ -16,7 +16,7 @@ next16 + react19 + tailwindcss + shadcn + bun
 - 避免高饱和度颜色
 - **不依赖颜色区分元素**
 - 注意适配移动端显示效果
-- 使用playwright截图统一保存到同一个目录下`screenshots/`，在该目录下再细分每一次新的修改都创建一个目录,例如,`screenshots/修复博客页/`
+- 使用playwright截图统一保存到同一个目录下`.playwright-cli/screenshots/`，在该目录下再细分每一次新的修改都创建一个目录,例如,`.playwright-cli/screenshots/修复博客页/`
 - 一定要多使用`tavily`等技能搜索相关最新资料来保证项目代码质量
 - api文档里找不到的接口一定要告知用户，禁止瞎猜
 - 所有技能需要工具已下载，一定要先直接使用`playwright-cli`、`ctx7`命令，不要添加包管理器脚本前缀，例如`npx playwright-cli@latest`、`npx ctx7@latest`，这些都是在直接命令无法使用时使用
