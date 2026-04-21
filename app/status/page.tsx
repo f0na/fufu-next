@@ -1,5 +1,6 @@
 import { PageWrapper } from '@/components/layout/page-wrapper'
 import { HomeLayout } from '@/components/home/home-layout'
+import { StatusContent } from '@/components/status'
 
 // 网站状态页
 export default function StatusPage() {
@@ -27,12 +28,7 @@ export default function StatusPage() {
           max_display: 3,
         }}
       >
-        <div className="bg-card/80 backdrop-blur-sm rounded-xl border border-border p-6">
-          <div className="space-y-4">
-            <h1 className="text-2xl font-semibold text-foreground">网站状态</h1>
-            <p className="text-muted-foreground">网站运行状态页面，正在建设中...</p>
-          </div>
-        </div>
+        <StatusContent />
       </HomeLayout>
     </PageWrapper>
   )
