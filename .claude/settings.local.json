@@ -8,6 +8,7 @@
             "Bash(playwright-cli goto:*)",
             "Bash(playwright-cli console:*)",
             "Bash(playwright-cli screenshot:*)",
+            "Bash(playwright-cli close)",
             "Bash(bun .claude/skills/tavily-search/scripts/search.mjs *)",
             "Bash(cp *)",
             "Bash(mkdir *)"
